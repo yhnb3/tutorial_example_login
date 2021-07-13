@@ -1,5 +1,7 @@
 import template from './login.template'
 import TextField from '../view/text-field'
+import { getAuthetication, getPost, getProfile } from '../utills/api'
+import axios from 'axios'
 
 export default class Login {
   #template = template
@@ -7,7 +9,18 @@ export default class Login {
     title: '여러 상황을 고려하여 로그인을 한번 구현해봅시다.',
   }
   #fields = []
+
   constructor() {
+    this.#initialize()
+
+    setTimeout(this.#attatchEventListner, 0)
+  }
+
+  #attatchEventListner = () => {
+    document.querySelector('#root').addEventListener('submit', this.#onSubmit)
+  }
+
+  #initialize = () => {
     const idField = new TextField({
       container: '#login-fields',
       data : {
@@ -33,6 +46,23 @@ export default class Login {
     this.#fields.push(idField)
     this.#fields.push(pwField)
   }
+
+  
+
+  #onSubmit = async (e) => {
+    e.preventDefault()
+
+    const loginData = this.#fields
+      .map(field => ({ [field.name] : field.value }))
+      .reduce((a, b) => ({...a, ...b}), {})
+    
+    const result = await getAuthetication(loginData)
+    // const posts = await getPost(id, token)
+    // const profile = await getProfile(id, token)
+    // console.log(posts, profile)
+    
+  }
+  
 
   render = () => {
     document.querySelector('#root').innerHTML = this.#template(this.#data)
