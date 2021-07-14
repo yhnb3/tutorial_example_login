@@ -23,7 +23,7 @@ app.use(cors(corsOptions))
 
 app.get('/api/user/:id', (req, res) => {
   if (!req.headers['token']) {
-    return res.status(403).send( {
+    return res.status(403).send({
       status: 'error'
     })
   }

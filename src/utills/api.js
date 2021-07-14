@@ -1,39 +1,26 @@
 export const getAuthetication = async (data) => {
-  try {
-    const response = await fetch('http://localhost:8080/api/authentication', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(data)
-    })
-    .then(res => {
-      if (res.status === 200) return res.json()
-      throw new Error('ssibal')
-    })
-    return response.result
-  } catch (err) {
-    alert('fail to fetch user: ', err)
-  }
-  
+  const response = await fetch('http://localhost:8080/api/authentication', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data)
+  })
+  const result = await response.json()
+  if (result.status === 'OK') return result
+  throw result
 }
 
 export const getPost = async (id, token) => {
-  try {
-    const response = await fetch(`http://localhost:8080/api/user/${id}/posts`, {
-      method:'GET',
-      headers: {
-        token
-      }
-    }).then(res => {
-      if (res.status === 200) return res.json()
-      throw new Error('ssibal')
-    })
-    return response.result
-  } catch(err) {
-    alert('fail to load post')
-  }
-  
+  const response = await fetch(`http://localhost:8080/api/user/${id}/posts`, {
+    method:'GET',
+    headers: {
+      token
+    }
+  }).then(res => {
+    return res.json()
+  })
+  return response.result  
 }
 
 export const getProfile = async (id, token) => {
