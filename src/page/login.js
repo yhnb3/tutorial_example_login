@@ -2,7 +2,7 @@ import template from './login.template'
 import TextField from '../view/text-field'
 import { getAuthetication, getPost, getProfile } from '../utills/api'
 import { handle } from '../constants'
-import { isThisTypeNode } from 'typescript'
+
 
 
 export default class Login {
@@ -64,18 +64,26 @@ export default class Login {
       .map(field => ({ [field.name] : field.value }))
       .reduce((a, b) => ({...a, ...b}), {})
     
-    const [data, err] = await handle(getAuthetication(loginData))
-    if (err) {
-      this.#data.loginFail = true
-      this.render()
+    try {
+      const [data, err] = await handle(getAuthetication(loginData))
+      if (err) throw new Error("loginError")
+
+      const [[postData, postErr], [profileData, profileErr]] = await Promise.all([handle(getPost(data.result.id, data.result.token)), handle(getProfile(data.result.id, data.result.token))])
+
+      if (postErr || profileErr) throw new Error("profileError")
+
+      this.#store.setProfile(profileData)
+      this.#store.setPosts(postData)
+
+      location.href = '/#/profile'
+    } catch(err) {
+      if (err.message === "loginError") {
+        this.#data.loginFail = true
+        this.render()
+      } else {
+        location.href = '/#/page-not-found'
+      }
     }
-
-    const [posts, profile] = await Promise.all([getPost(data.result.id, data.result.token), getProfile(data.result.id, data.result.token)])
-
-    this.#store.setProfile(profile)
-    this.#store.setPosts(posts)
-
-    location.href = '/#/profile'
   }
   
 
