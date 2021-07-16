@@ -8,7 +8,7 @@ import { handle } from '../constants'
 export default class Login {
   #template = template
   #data = {
-    title: '여러 상황을 고려하여 로그인을 한번 구현해봅시다.',
+    title: '생각보다 간단하지 않은 로그인',
     loginFail: false,
   }
   #fields = []
