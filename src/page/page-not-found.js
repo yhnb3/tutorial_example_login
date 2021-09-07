@@ -12,3 +12,4 @@ export default class PageNotFound {
     this.#container.innerHTML = this.#template({})
   }
 }
+
